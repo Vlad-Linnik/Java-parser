@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Цитати та курси валют</title>
+    <style>
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background-color: #f9f9f9;
+        margin: 30px;
+        color: #333;
+      }
+
+      h1,
+      h2 {
+        color: #2c3e50;
+      }
+
+      button,
+      select {
+        background-color: #3498db;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        margin: 10px 5px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      button:hover,
+      select:hover {
+        background-color: #2980b9;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding-right: 40px;
+        background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+        background-repeat: no-repeat;
+        background-position-x: 95%;
+        background-position-y: center;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 300px;
+        margin-top: 20px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #ccc;
+      }
+
+      th,
+      td {
+        padding: 8px 12px;
+        text-align: center;
+      }
+
+      ul {
+        padding-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Цитати з quotes.toscrape.com</h1>
+
+    <!-- Вибір сторінки -->
+    <form method="get" action="/">
+      <label for="page">Виберіть сторінку:</label>
+      <select name="page" id="page" onchange="this.form.submit()">
+        <option
+          th:each="i : ${#numbers.sequence(1,10)}"
+          th:value="${i}"
+          th:selected="${i == selectedPage}"
+          th:text="'Сторінка ' + ${i}"
+        ></option>
+      </select>
+    </form>
+
+    <!-- Кнопка експорту -->
+    <form method="get" action="/export">
+      <input type="hidden" name="page" th:value="${selectedPage}" />
+      <button type="submit">Скачати Excel з цитатами</button>
+    </form>
+
+    <!-- Вивід цитат -->
+    <ul>
+      <li th:each="quote : ${quotes}" th:text="${quote}"></li>
+    </ul>
+
+    <hr />
+
+    <h2>Курси валют</h2>
+    <table>
+      <tr>
+        <th>Валюта</th>
+        <th>Купівля</th>
+        <th>Продаж</th>
+      </tr>
+      <tr th:each="rate : ${rates}">
+        <td th:text="${rate.ccy} + ' / ' + ${rate.base_ccy}"></td>
+        <td th:text="${rate.buy}"></td>
+        <td th:text="${rate.sale}"></td>
+      </tr>
+    </table>
+  </body>
+</html>
